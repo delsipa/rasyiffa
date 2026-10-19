@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koperasi Sekolah - Siswa Mandiri</title>
+    
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Menghubungkan ke file CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ================= 1. HALAMAN LOGIN ================= -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="logo-circle" style="overflow: hidden;">
+                <img src="logo.jpeg" alt="Logo Koperasi" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/90'">
+            </div>
+            <h2>Koperasi Sekolah</h2>
+            <p>Silakan isi identitas Anda untuk masuk</p>
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="input-nama"><i class="fa-solid fa-user"></i> Nama Siswa</label>
+                    <input type="text" id="input-nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label for="input-kelas"><i class="fa-solid fa-graduation-cap"></i> Kelas</label>
+                    <input type="text" id="input-kelas" placeholder="Contoh: XII RPL 1 / XI TBSM" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    Masuk Ke Koperasi <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 2. DASHBOARD UTAMA ================= -->
+    <div id="app-screen" style="display: none;">
+        <!-- HEADER NAVBAR -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="brand-logo">
+                    <img src="logo.jpeg" alt="Logo Koperasi" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/50'">
+                </div>
+                <div class="brand-title">
+                    Website<br>Koperasi<br>Sekolah
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a id="nav-profil" onclick="switchTab('profil')">Profil</a></li>
+                <li><a id="nav-beranda" class="active" onclick="switchTab('beranda')">Beranda</a></li>
+                <li><a id="nav-produk" onclick="switchTab('produk')">Produk</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Cari barang..." id="search-input" onkeyup="filterProducts()">
+                </div>
+                <button class="cart-icon-btn" onclick="openCartModal()">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+                <!-- Tombol Logout -->
+                <button class="btn-logout" onclick="handleLogout()" title="Keluar / Ganti Akun">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-container">
+
+            <!-- TAB 1: BERANDA -->
+            <section id="tab-beranda" class="page-tab active">
+                <div class="beranda-grid">
+                    <div class="side-profile">
+                        <div class="big-avatar">
+                            <img src="logo.jpeg" alt="Logo Koperasi" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/180'">
+                        </div>
+                        <div class="badge-populer">Produk populer</div>
+                    </div>
+
+                    <div class="hero-banner">
+                        <h1>Selamat Datang di Koperasi Sekolah</h1>
+                        <p>Dapatkan seragam dan kebutuhan sekolah terlengkap dengan transaksi praktis!</p>
+                    </div>
+                </div>
+
+                <div class="product-grid-4" id="popular-products-container">
+                    <!-- Ditampilkan via JavaScript -->
+                </div>
+            </section>
+
+            <!-- TAB 2: PROFIL -->
+            <section id="tab-profil" class="page-tab">
+                <div class="profil-container">
+                    <div class="profil-card">
+                        <h2>Profil Koperasi</h2>
+                        <p><strong>Tentang Koperasi Sekolah kami</strong><br>
+                        Koperasi sekolah "Siswa Mandiri" adalah badan usaha yang dikelola secara gotong royong oleh siswa dan guru untuk memenuhi kebutuhan belajar sehari-hari.</p>
+                    </div>
+                    <div class="school-img-card">
+                        <img src="sekolah.jpeg" alt="Gedung Sekolah" onerror="this.src='logo.jpeg'">
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: PRODUK -->
+            <section id="tab-produk" class="page-tab">
+                <div class="section-header-banner">
+                    Koleksi Perlengkapan Sekolah
+                </div>
+                <div class="product-grid-6" id="all-products-container">
+                    <!-- Ditampilkan via JavaScript -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= MODAL BANTUAN & PEMESANAN ================= -->
+    
+    <!-- Modal Opsi Pembelian -->
+    <div class="modal-overlay" id="modal-option">
+        <div class="modal-box">
+            <span class="close-modal" onclick="closeModal('modal-option')">&times;</span>
+            <h3 style="margin-bottom: 0.5rem;" id="opt-title">Nama Produk</h3>
+            <p style="color: #64748b;" id="opt-price">Harga: Rp 150.000</p>
+            <p style="margin-top: 1rem; font-size: 0.95rem;">Pilih tindakan untuk produk ini:</p>
+
+            <div class="action-modal-btns">
+                <button class="btn-action btn-cart" onclick="confirmAddToCart()">
+                    <i class="fa-solid fa-cart-plus"></i> + Masukkan Keranjang
+                </button>
+                <button class="btn-action btn-checkout-now" onclick="confirmDirectBuy()">
+                    <i class="fa-solid fa-bag-shopping"></i> Langsung Beli
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Keranjang & Checkout Form -->
+    <div class="modal-overlay" id="modal-cart">
+        <div class="modal-box">
+            <span class="close-modal" onclick="closeModal('modal-cart')">&times;</span>
+            <h3><i class="fa-solid fa-cart-shopping"></i> Keranjang Belanja</h3>
+            
+            <div class="cart-list" id="cart-items-wrapper">
+                <!-- Cart Items -->
+            </div>
+
+            <div class="cart-total-box">
+                <span>Total Biaya:</span>
+                <span id="cart-total-price" style="color: #4f46e5;">RP.0</span>
+            </div>
+
+            <!-- FORMULIR PEMESANAN SISWA -->
+            <form id="form-checkout" onsubmit="handleCheckoutWhatsApp(event)">
+                <h4 style="margin: 1rem 0 0.5rem 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
+                    Formulir Pemesanan Siswa
+                </h4>
+                <div class="form-group">
+                    <label>Nama Siswa</label>
+                    <input type="text" id="checkout-nama" required readonly style="background: #f1f5f9;">
+                </div>
+                <div class="form-group">
+                    <label>Kelas</label>
+                    <input type="text" id="checkout-kelas" required readonly style="background: #f1f5f9;">
+                </div>
+                <div class="form-group">
+                    <label>Metode Pembayaran</label>
+                    <input type="text" value="Cash / Tunai di Koperasi Sekolah" readonly style="background: #e2e8f0; font-weight: bold; color: #1e293b;">
+                </div>
+
+                <button type="submit" class="btn-primary" style="background: #25D366; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <i class="fa-brands fa-whatsapp fa-xl"></i> Pesan via WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Menghubungkan ke file JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
